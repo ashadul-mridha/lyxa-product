@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import bodyParser from 'body-parser';
+import * as bodyParser from 'body-parser';
 import { AppModule } from './app.module';
 import { AppConfigService } from './config/app/config.service';
 
