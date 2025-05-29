@@ -4,6 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AppConfigModule } from './config/app/config.module';
+import { RabbitmqModule } from './config/rabbitmq/rabbitmq.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { AppConfigModule } from './config/app/config.module';
       envFilePath: '.env',
     }),
     MongooseModule.forRoot(process.env.DB_URL),
+    RabbitmqModule,
   ],
   controllers: [AppController],
   providers: [AppService],
