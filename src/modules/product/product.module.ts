@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { RabbitmqModule } from '../../config/rabbitmq/rabbitmq.module';
 import { ProductController } from './controllers/product.controller';
+import { ProductSubController } from './MQ/product.sub';
 import { ProductModel } from './schemas/product.schema';
 import { ProductService } from './services/product.service';
 
@@ -15,7 +16,7 @@ import { ProductService } from './services/product.service';
     ]),
     RabbitmqModule,
   ],
-  controllers: [ProductController],
+  controllers: [ProductController, ProductSubController],
   providers: [ProductService],
   exports: [ProductService],
 })
