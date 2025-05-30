@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AppConfigModule } from './config/app/config.module';
 import { RabbitmqModule } from './config/rabbitmq/rabbitmq.module';
+import { ProductModule } from './modules/product/product.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { RabbitmqModule } from './config/rabbitmq/rabbitmq.module';
     }),
     MongooseModule.forRoot(process.env.DB_URL),
     RabbitmqModule,
+    ProductModule,
   ],
   controllers: [AppController],
   providers: [AppService],

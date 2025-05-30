@@ -2,6 +2,8 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as bodyParser from 'body-parser';
 import { AppModule } from './app.module';
+import { ValidationFilter } from './common/filters/validation.filter';
+import { createGlobalValidationPipe } from './common/pipes/global-validation-pipe';
 import { AppConfigService } from './config/app/config.service';
 
 async function bootstrap() {
@@ -12,6 +14,10 @@ async function bootstrap() {
   app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
   const appConfig: AppConfigService = app.get(AppConfigService);
+
+  // validation filters and pipes
+  app.useGlobalFilters(new ValidationFilter());
+  app.useGlobalPipes(createGlobalValidationPipe());
 
   // swagger implement
   const swaggerConfig = new DocumentBuilder()

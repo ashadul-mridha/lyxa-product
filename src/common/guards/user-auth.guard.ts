@@ -19,20 +19,18 @@ export class UserAuthGuard implements CanActivate {
     }
     try {
       const user = await this.rabbitmqService.request(
-        'user_management',
-        'validate_token_rpc',
+        'auth_rpc',
+        'validate_token',
         { token },
       );
-
-      // const payload = await axios.post(`${process.env.AUTH_URL}/auth/user/validate-token`, {
-      //     token
-      // });
+      //   console.log('User from RabbitMQ:', user);
 
       if (!user) {
         throw new UnauthorizedException();
       }
 
       request['user'] = user;
+      request['token'] = token;
     } catch {
       throw new UnauthorizedException();
     }
