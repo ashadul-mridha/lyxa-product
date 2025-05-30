@@ -1,85 +1,120 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Lyxa Product Service
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A microservice for managing products with MongoDB database and RabbitMQ messaging.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Setup Instructions
 
-## Description
+### Prerequisites
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- Docker and Docker Compose
+- Node.js (for local development)
+- MongoDB (if running without Docker)
+- RabbitMQ (accessible via network)
 
-## Project setup
+### Environment Setup
+
+1. Clone the repository
+2. Copy the environment template to create your .env file:
 
 ```bash
-$ npm install
+cp .env.example .env
 ```
 
-## Compile and run the project
+3. The default configuration includes:
+   - Application port: 4016
+   - MongoDB connection: mongodb://mongodb:27017/lyxa_product_service
+   - RabbitMQ connection: amqp://guest:guest@172.17.0.1:5672
+
+### Running with Docker Compose
+
+The easiest way to run the service is using Docker Compose:
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+docker compose up
 ```
 
-## Run tests
+This will:
+
+- Build the Docker image for the application
+- Start the application container
+- Start a MongoDB container
+- Configure networking between services
+- Mount volumes for persistent data
+
+To run in detached mode:
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+docker compose up -d
 ```
 
-## Resources
+To rebuild the containers:
 
-Check out a few resources that may come in handy when working with NestJS:
+```bash
+docker compose up --build
+```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### Running Locally (Without Docker)
 
-## Support
+1. Install dependencies:
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```bash
+npm install
+```
 
-## Stay in touch
+2. Make sure MongoDB is running and accessible
+3. Edit the `.env` file to use the local MongoDB connection string:
+   - Uncomment `DB_URL=mongodb://localhost:27017/lyxa_product_service`
+   - Comment out the Docker MongoDB URL
+4. Start the application:
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```bash
+npm run start:dev
+```
 
-## License
+## Inter-Service Communication Flow
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+This service communicates with other microservices using RabbitMQ for message queuing:
+
+### RabbitMQ Configuration
+
+- By default, the service connects to RabbitMQ at `amqp://guest:guest@172.17.0.1:5672`
+- You can:
+  - Use your local RabbitMQ instance by updating the RMQ_URL in .env
+  - Run a separate RabbitMQ container and configure both services to use it
+
+### Authentication Flow
+
+1. When a protected endpoint is accessed, the UserAuthGuard intercepts the request
+2. The guard extracts the Bearer token from the request headers
+3. It sends an RPC request to the Auth service via RabbitMQ for token validation
+4. The Auth service validates the token and returns the user information
+5. If valid, the request proceeds with the user information attached
+6. If invalid, an Unauthorized exception is thrown
+
+### Message Publishing
+
+The service can publish events to other services using the RabbitmqService:
+
+- Events are published to specific exchanges with routing keys
+- Other services can subscribe to these events
+
+### Message Subscription
+
+The service subscribes to events from other services:
+
+- The ProductSubController manages message subscriptions
+- It processes incoming messages and performs related business logic
+
+## API Documentation
+
+Once the service is running, you can access the API documentation at:
+
+```
+http://localhost:4016/api
+```
+
+## Project Structure
+
+- `src/modules/product`: Product module with controllers, services, and DTOs
+- `src/config`: Configuration modules for app settings and RabbitMQ
+- `src/common`: Shared utilities, decorators, guards, and services
