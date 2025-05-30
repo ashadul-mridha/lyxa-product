@@ -9,12 +9,12 @@ dotenv.config();
     RabbitMQModule.forRoot(RabbitMQModule, {
       exchanges: [
         {
-          name: 'booking_api',
+          name: 'auth_api',
           type: 'topic',
           // type: 'fanout',
         },
         {
-          name: 'booking_rpc',
+          name: 'auth_rpc',
           type: 'direct',
         },
       ],
