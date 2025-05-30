@@ -23,4 +23,6 @@ export class CreateProductDto {
   @IsNotEmpty()
   @IsNumber()
   qty: number;
+
+  slug?: string;
 }
